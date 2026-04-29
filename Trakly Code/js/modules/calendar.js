@@ -14,8 +14,8 @@ export function renderCalendar() {
                     <p class="text-muted mb-0">Task and event planning by day and month</p>
                 </div>
                 <div class="calendar-quick-actions">
-                    <button type="button" id="addTaskEventBtn" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-1"></i>Add Task/Event
+                    <button type="button" id="addTaskEventBtn" class="btn btn-add-action">
+                        <i class="bi bi-plus-lg me-1"></i>Add Task/Event
                     </button>
                 </div>
             </div>
@@ -35,7 +35,7 @@ export function renderCalendar() {
                 <span class="text-muted small align-self-center" id="selectedDateLabel"></span>
             </div>
 
-            <dialog id="taskeventModal" class="task-eventModal custom-modal">
+            <dialog id="taskeventModal" class="task-eventModal">
                 <div class="modal-header">
                     <h2 id="taskeventModalTitle">Add New</h2>
                     <button type="button" id="closeCrossModal">&times;</button>
@@ -44,10 +44,9 @@ export function renderCalendar() {
                 <form id="taskeventForm">
                     <input type="hidden" id="taskeventItemId" />
 
-                    <div class="input-group">
+                    <div class="field-group">
                         <label class="form-label">TYPE</label>
                         <div class="type-toggle">
-                            <br>
                             <input type="radio" id="task" name="type" value="task" checked>
                             <label for="task">Task</label>
 
@@ -56,33 +55,33 @@ export function renderCalendar() {
                         </div>
                     </div>
 
-                    <div class="input-group">
+                    <div class="field-group">
                         <label for="taskeventTitle" class="form-label">TITLE</label>
                         <input type="text" id="taskeventTitle" name="title" placeholder="Enter title..." required>
                     </div>
 
-                    <div class="input-group">
+                    <div class="field-group">
                         <label for="taskeventDesc" class="form-label">DESCRIPTION</label>
                         <textarea id="taskeventDesc" name="desc" placeholder="Optional description..."></textarea>
                     </div>
 
                     <div class="row-flex">
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="taskeventDate" class="form-label">DATE</label>
                             <input type="date" id="taskeventDate" name="date" required>
                         </div>
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="taskeventStartTime" class="form-label">START TIME</label>
                             <input type="time" id="taskeventStartTime" name="startTime">
                         </div>
                     </div>
 
                     <div class="row-flex">
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="taskeventEndTime" class="form-label">END TIME</label>
                             <input type="time" id="taskeventEndTime" name="endTime">
                         </div>
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="taskeventReminder" class="form-label">REMINDER</label>
                             <select id="taskeventReminder" class="form-control">
                                 <option value="none">None</option>
@@ -91,11 +90,28 @@ export function renderCalendar() {
                                 <option value="30m">30 minutes before</option>
                                 <option value="1h">1 hour before</option>
                                 <option value="1d">1 day before</option>
+                                <option value="custom">Custom</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="input-group">
+                    <div class="row-flex d-none" id="reminderCustomRow">
+                        <div class="field-group">
+                            <label for="taskeventReminderEvery" class="form-label">TIME</label>
+                            <input type="number" min="1" id="taskeventReminderEvery" class="form-control" value="1">
+                        </div>
+                        <div class="field-group">
+                            <label for="taskeventReminderUnit" class="form-label">UNIT</label>
+                            <select id="taskeventReminderUnit" class="form-control">
+                                <option value="minute">Minutes</option>
+                                <option value="hour">Hours</option>
+                                <option value="day">Days</option>
+                                <option value="week">Weeks</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
                         <label for="taskeventRepeatType" class="form-label">REPEAT</label>
                         <select id="taskeventRepeatType" class="form-control">
                             <option value="none">None</option>
@@ -107,11 +123,11 @@ export function renderCalendar() {
                     </div>
 
                     <div class="row-flex d-none" id="repeatCustomRow">
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="taskeventRepeatEvery" class="form-label">EVERY</label>
                             <input type="number" min="1" id="taskeventRepeatEvery" class="form-control" value="1">
                         </div>
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="taskeventRepeatUnit" class="form-label">UNIT</label>
                             <select id="taskeventRepeatUnit" class="form-control">
                                 <option value="day">Day(s)</option>
@@ -121,8 +137,8 @@ export function renderCalendar() {
                         </div>
                     </div>
 
-                    <div class="row" id="taskFieldsRow">
-                        <div class="input-group">
+                    <div class="row-flex" id="taskFieldsRow">
+                        <div class="field-group">
                             <label for="taskeventPriority" class="form-label">PRIORITY</label>
                             <select name="priority" class="form-control" id="taskeventPriority">
                                 <option>Low</option>
@@ -131,33 +147,13 @@ export function renderCalendar() {
                             </select>
                         </div>
 
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="taskeventStatus" class="form-label">STATUS</label>
                             <select name="status" class="form-control" id="taskeventStatus">
                                 <option>To Do</option>
                                 <option>In Progress</option>
                                 <option>Done</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label class="form-label">COLOR LABEL</label>
-                        <div class="color-picker" id="taskeventColor">
-                            <input type="radio" name="color" value="purple" id="c1" checked>
-                            <label for="c1" style="background: #5a57d6;"></label>
-
-                            <input type="radio" name="color" value="blue" id="c2">
-                            <label for="c2" style="background: #3498db;"></label>
-
-                            <input type="radio" name="color" value="orange" id="c3">
-                            <label for="c3" style="background: #e67e22;"></label>
-
-                            <input type="radio" name="color" value="red" id="c4">
-                            <label for="c4" style="background: #e74c3c;"></label>
-
-                            <input type="radio" name="color" value="green" id="c5">
-                            <label for="c5" style="background: #2ecc71;"></label>
                         </div>
                     </div>
 
@@ -171,11 +167,11 @@ export function renderCalendar() {
             <div class="card p-3 mt-4 calendar-planner-card">
                 <div class="calendar-planner-head">
                     <h6 class="mb-0"><i class="bi bi-list-check me-2"></i>Task and Event Planner</h6>
-                    <button type="button" id="addTaskEventInlineBtn" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-plus-circle me-1"></i>Add
+                    <button type="button" id="addTaskEventInlineBtn" class="btn btn-add-action btn-add-action-sm">
+                        <i class="bi bi-plus-lg me-1"></i>Add
                     </button>
                 </div>
-                <ul class="list-group calendar-planner-scroll" id="taskeventList"></ul>
+                <ul class="list-group" id="taskeventList"></ul>
             </div>
         </div>
     `;
@@ -198,6 +194,8 @@ export function setupCalendar() {
 
     const repeatTypeSelect = document.getElementById("taskeventRepeatType");
     const repeatCustomRow = document.getElementById("repeatCustomRow");
+    const reminderSelect = document.getElementById("taskeventReminder");
+    const reminderCustomRow = document.getElementById("reminderCustomRow");
 
     if (!addTaskEventBtn || !taskeventModal || !closeCrossModal || !cancelTaskEventBtn || !taskeventForm || !prevMonthBtn || !nextMonthBtn || !taskeventList) {
         console.error("Calendar setup error: required elements not found.");
@@ -236,6 +234,11 @@ export function setupCalendar() {
     repeatTypeSelect?.addEventListener("change", () => {
         const isCustom = repeatTypeSelect.value === "custom";
         repeatCustomRow?.classList.toggle("d-none", !isCustom);
+    });
+
+    reminderSelect?.addEventListener("change", () => {
+        const isCustom = reminderSelect.value === "custom";
+        reminderCustomRow?.classList.toggle("d-none", !isCustom);
     });
 
     // Save new or edited item
@@ -322,16 +325,19 @@ function openCreateModal() {
     const modal = document.getElementById("taskeventModal");
     const form = document.getElementById("taskeventForm");
     const repeatCustomRow = document.getElementById("repeatCustomRow");
+    const reminderCustomRow = document.getElementById("reminderCustomRow");
 
     form.reset();
-    setDefaultColor("purple");
     if (selectedDate && dateInput) dateInput.value = selectedDate;
     if (title) title.textContent = "Add New";
     if (saveLabel) saveLabel.textContent = "Save";
     if (repeatCustomRow) repeatCustomRow.classList.add("d-none");
+    if (reminderCustomRow) reminderCustomRow.classList.add("d-none");
 
     document.getElementById("taskeventRepeatEvery").value = "1";
     document.getElementById("taskeventReminder").value = "none";
+    document.getElementById("taskeventReminderEvery").value = "1";
+    document.getElementById("taskeventReminderUnit").value = "minute";
     document.getElementById("taskeventRepeatType").value = "none";
 
     modal.showModal();
@@ -345,6 +351,7 @@ function openEditModal(itemRaw) {
     const saveLabel = document.getElementById("saveTaskEventBtnLabel");
     const modal = document.getElementById("taskeventModal");
     const repeatCustomRow = document.getElementById("repeatCustomRow");
+    const reminderCustomRow = document.getElementById("reminderCustomRow");
 
     if (title) title.textContent = "Edit Item";
     if (saveLabel) saveLabel.textContent = "Update";
@@ -359,15 +366,16 @@ function openEditModal(itemRaw) {
     document.getElementById("taskeventStartTime").value = item.startTime || "";
     document.getElementById("taskeventEndTime").value = item.endTime || "";
     document.getElementById("taskeventReminder").value = item.reminder || "none";
+    document.getElementById("taskeventReminderEvery").value = String(item.reminderEvery || 1);
+    document.getElementById("taskeventReminderUnit").value = item.reminderUnit || "minute";
     document.getElementById("taskeventRepeatType").value = item.repeatType || "none";
     document.getElementById("taskeventRepeatEvery").value = String(item.repeatEvery || 1);
     document.getElementById("taskeventRepeatUnit").value = item.repeatUnit || "day";
     document.getElementById("taskeventPriority").value = item.priority || "Medium";
     document.getElementById("taskeventStatus").value = item.status || "To Do";
 
-    setDefaultColor(item.color || "purple");
-
     if (repeatCustomRow) repeatCustomRow.classList.toggle("d-none", item.repeatType !== "custom");
+    if (reminderCustomRow) reminderCustomRow.classList.toggle("d-none", item.reminder !== "custom");
     modal.showModal();
 }
 
@@ -377,11 +385,6 @@ function closeAndResetModal() {
     editingItemId = null;
     form?.reset();
     modal?.close();
-}
-
-function setDefaultColor(color) {
-    const colorInput = document.querySelector(`input[name="color"][value="${color}"]`);
-    if (colorInput) colorInput.checked = true;
 }
 
 // Data helpers
@@ -394,6 +397,10 @@ function collectFormData() {
     const type = document.querySelector(`input[name="type"]:checked`)?.value || "task";
     const startTime = document.getElementById("taskeventStartTime").value;
     const endTime = document.getElementById("taskeventEndTime").value;
+    const reminder = document.getElementById("taskeventReminder").value || "none";
+    const reminderEveryRaw = Number(document.getElementById("taskeventReminderEvery").value);
+    const reminderEvery = Number.isFinite(reminderEveryRaw) && reminderEveryRaw > 0 ? reminderEveryRaw : 1;
+    const reminderUnit = document.getElementById("taskeventReminderUnit").value || "minute";
     const status = document.getElementById("taskeventStatus").value;
     const progress = status === "Done" ? 100 : 0;
 
@@ -408,14 +415,15 @@ function collectFormData() {
         startTime,
         endTime,
         time: startTime, // backward compatibility
-        reminder: document.getElementById("taskeventReminder").value || "none",
+        reminder,
+        reminderEvery,
+        reminderUnit,
         repeatType: document.getElementById("taskeventRepeatType").value || "none",
         repeatEvery: Number(document.getElementById("taskeventRepeatEvery").value) || 1,
         repeatUnit: document.getElementById("taskeventRepeatUnit").value || "day",
         priority: document.getElementById("taskeventPriority").value || "Medium",
         status,
         progress: type === "task" ? progress : 0,
-        color: document.querySelector(`input[name="color"]:checked`)?.value || "purple",
         updatedAt: new Date().toISOString()
     };
 }
@@ -431,6 +439,9 @@ function validateCalendarItem(item) {
     if (item.repeatType === "custom" && (!Number.isFinite(item.repeatEvery) || item.repeatEvery < 1)) {
         return "Custom repeat value must be at least 1.";
     }
+    if (item.reminder === "custom" && (!Number.isFinite(item.reminderEvery) || item.reminderEvery < 1)) {
+        return "Custom reminder value must be at least 1.";
+    }
 
     return null;
 }
@@ -442,6 +453,9 @@ function normalizeTaskEventItem(raw) {
     let progress = Number(raw?.progress ?? (status === "Done" ? 100 : 0));
     if (Number.isNaN(progress)) progress = status === "Done" ? 100 : 0;
     progress = clamp(progress, 0, 100);
+    const reminder = raw?.reminder || "none";
+    const reminderEvery = Number(raw?.reminderEvery) > 0 ? Number(raw.reminderEvery) : 1;
+    const reminderUnit = ["minute", "hour", "day", "week"].includes(raw?.reminderUnit) ? raw.reminderUnit : "minute";
 
     return {
         id: raw?.id ?? Date.now(),
@@ -452,14 +466,15 @@ function normalizeTaskEventItem(raw) {
         startTime,
         endTime: raw?.endTime || "",
         time: startTime, // compatibility bridge
-        reminder: raw?.reminder || "none",
+        reminder,
+        reminderEvery,
+        reminderUnit,
         repeatType: raw?.repeatType || "none",
         repeatEvery: Number(raw?.repeatEvery) > 0 ? Number(raw.repeatEvery) : 1,
         repeatUnit: raw?.repeatUnit || "day",
         priority: raw?.priority || "Medium",
         status,
         progress: type === "task" ? progress : 0,
-        color: raw?.color || "purple",
         updatedAt: raw?.updatedAt || null
     };
 }
@@ -493,7 +508,7 @@ function renderTaskEventList() {
             const typeLabel = item.type === "task" ? "Task" : "Event";
             const typeBadgeClass = item.type === "task" ? "bg-primary" : "bg-warning text-dark";
             const repeatBadge = item.repeatType !== "none" ? `<span class="badge bg-light text-dark border"><i class="bi bi-arrow-repeat me-1"></i>${escapeHtml(repeatText(item))}</span>` : "";
-            const reminderBadge = item.reminder !== "none" ? `<span class="badge bg-light text-dark border"><i class="bi bi-bell me-1"></i>${escapeHtml(reminderText(item.reminder))}</span>` : "";
+            const reminderBadge = item.reminder !== "none" ? `<span class="badge bg-light text-dark border"><i class="bi bi-bell me-1"></i>${escapeHtml(reminderText(item))}</span>` : "";
             const statusControls = STATUS_OPTIONS.map((statusOption) => `
                 <button type="button"
                     class="status-pill-btn ${item.status === statusOption ? "is-active" : ""}"
@@ -652,7 +667,10 @@ function repeatText(item) {
     return `Every ${item.repeatEvery || 1} ${item.repeatUnit || "day"}(s)`;
 }
 
-function reminderText(reminder) {
+function reminderText(item) {
+    if (item.reminder === "custom") {
+        return `${item.reminderEvery || 1} ${item.reminderUnit || "minute"}(s) before`;
+    }
     const map = {
         none: "No reminder",
         "5m": "5m before",
@@ -661,7 +679,7 @@ function reminderText(reminder) {
         "1h": "1h before",
         "1d": "1d before"
     };
-    return map[reminder] || reminder;
+    return map[item.reminder] || item.reminder;
 }
 
 // Navigation context from shell (search/notifications)

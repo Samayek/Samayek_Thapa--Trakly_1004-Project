@@ -211,7 +211,7 @@ function initGlobalSearch() {
     });
 }
 
-// Functions to operate notifications, building the notification list based on upcoming due tasks/events and recent transactions, allowing users to mark them as read or dismiss them, and ensuring that dismissed notifications do not reappear in the future. This will enhance user engagement and help them stay on top of important items without being intrusive.
+// Build and manage notification items from calendar data (due, overdue, upcoming, and reminder-triggered).
 
 function buildNotifications() {
     const now = new Date();
@@ -228,6 +228,8 @@ function buildNotifications() {
         const baseTime = item.startTime || item.time || "23:59";
         const dateObj = new Date(`${item.date}T${baseTime}`);
         const reminderValue = item.reminder || "none";
+        const reminderEvery = Number(item.reminderEvery) > 0 ? Number(item.reminderEvery) : 1;
+        const reminderUnit = ["minute", "hour", "day", "week"].includes(item.reminderUnit) ? item.reminderUnit : "minute";
         const reminderBaseTime = baseTime;
         const reminderDateObj = new Date(`${item.date}T${reminderBaseTime}`);
 
@@ -236,7 +238,9 @@ function buildNotifications() {
                 id: `due:${item.id ?? `${item.date}-${item.title}`}`,
                 view: "calendar",
                 title: `Task due today: ${item.title || "(Untitled)"}`,
-                meta: `${item.date}${baseTime ? ` | ${baseTime}` : ""}`
+                meta: `${item.date}${baseTime ? ` | ${baseTime}` : ""}`,
+                date: item.date,
+                itemId: item.id ?? null
             });
         }
 
@@ -245,7 +249,9 @@ function buildNotifications() {
                 id: `overdue:${item.id ?? `${item.date}-${item.title}`}`,
                 view: "calendar",
                 title: `Overdue task: ${item.title || "(Untitled)"}`,
-                meta: `${item.date}${baseTime ? ` | ${baseTime}` : ""}`
+                meta: `${item.date}${baseTime ? ` | ${baseTime}` : ""}`,
+                date: item.date,
+                itemId: item.id ?? null
             });
         }
 
@@ -254,20 +260,25 @@ function buildNotifications() {
                 id: `upcoming:${item.id ?? `${item.date}-${item.title}`}`,
                 view: "calendar",
                 title: `Upcoming event: ${item.title || "(Untitled)"}`,
-                meta: `${item.date}${baseTime ? ` | ${baseTime}` : ""}`
+                meta: `${item.date}${baseTime ? ` | ${baseTime}` : ""}`,
+                date: item.date,
+                itemId: item.id ?? null
             });
         }
 
         if (reminderValue !== "none" && !isDone && !Number.isNaN(reminderDateObj.getTime())) {
-            const offset = reminderOffsetMs(reminderValue);
+            const offset = reminderOffsetMs(reminderValue, reminderEvery, reminderUnit);
             if (offset > 0) {
                 const triggerTime = new Date(reminderDateObj.getTime() - offset);
                 if (now >= triggerTime && now <= reminderDateObj) {
+                    const reminderToken = reminderValue === "custom" ? `${reminderEvery}${reminderUnit}` : reminderValue;
                     notices.push({
-                        id: `reminder:${item.id ?? `${item.date}-${item.title}`}:${reminderValue}`,
+                        id: `reminder:${item.id ?? `${item.date}-${item.title}`}:${reminderToken}`,
                         view: "calendar",
                         title: `Reminder: ${item.title || "(Untitled)"}`,
-                        meta: `${item.date} | ${reminderBaseTime}`
+                        meta: `${item.date} | ${reminderBaseTime}`,
+                        date: item.date,
+                        itemId: item.id ?? null
                     });
                 }
             }
@@ -307,7 +318,7 @@ function renderNotifications() {
 
     notificationEmpty.classList.add("d-none");
     notificationList.innerHTML = notifications.map((n) => `
-        <div class="notification-item ${read.has(n.id) ? "" : "unread"}" data-id="${n.id}" data-view="${n.view}">
+        <div class="notification-item ${read.has(n.id) ? "" : "unread"}" data-id="${n.id}" data-view="${n.view}" data-date="${n.date || ""}" data-item-id="${n.itemId ?? ""}">
             <div class="notification-item-title">${escapeHtml(n.title)}</div>
             <div class="notification-item-meta">${escapeHtml(n.meta)}</div>
             <div class="notification-item-actions">
@@ -346,6 +357,9 @@ function initNotifications() {
 
         const id = card.dataset.id;
         const view = card.dataset.view;
+        const date = card.dataset.date;
+        const itemIdRaw = card.dataset.itemId;
+        const itemId = itemIdRaw === "" ? null : (Number.isNaN(Number(itemIdRaw)) ? itemIdRaw : Number(itemIdRaw));
         const action = actionBtn.dataset.action;
 
         if (action === "read") {
@@ -362,11 +376,15 @@ function initNotifications() {
 
         if (action === "open") {
             markNotificationRead(id);
-            loadView(view);
-            const navBtn = document.querySelector(`.nav-btn[data-view="${view}"]`);
-            if (navBtn) {
-                setActiveButton(navBtn);
-                updateTopbarTitle(navBtn);
+            if (view === "calendar" && date) {
+                navigateToCalendarItem({ date, itemId });
+            } else {
+                loadView(view);
+                const navBtn = document.querySelector(`.nav-btn[data-view="${view}"]`);
+                if (navBtn) {
+                    setActiveButton(navBtn);
+                    updateTopbarTitle(navBtn);
+                }
             }
             notificationPanel.classList.remove("is-open");
             notificationPanel.setAttribute("aria-hidden", "true");
@@ -405,15 +423,18 @@ function runReminderTick({ pushBrowserNotification = true } = {}) {
         const eventDate = new Date(`${item.date}T${baseTime}`);
         if (Number.isNaN(eventDate.getTime())) return;
 
-        const offsetMs = reminderOffsetMs(item.reminder);
+        const reminderEvery = Number(item.reminderEvery) > 0 ? Number(item.reminderEvery) : 1;
+        const reminderUnit = ["minute", "hour", "day", "week"].includes(item.reminderUnit) ? item.reminderUnit : "minute";
+        const offsetMs = reminderOffsetMs(item.reminder, reminderEvery, reminderUnit);
         if (offsetMs <= 0) return;
 
         const triggerTime = new Date(eventDate.getTime() - offsetMs);
         const withinWindow = now >= triggerTime && now <= eventDate;
         if (!withinWindow) return;
+        const reminderToken = item.reminder === "custom" ? `${reminderEvery}${reminderUnit}` : item.reminder;
 
         dueItems.push({
-            id: `reminder:${item.id ?? `${item.date}-${item.title}-${baseTime}`}:${item.reminder}`,
+            id: `reminder:${item.id ?? `${item.date}-${item.title}-${baseTime}`}:${reminderToken}`,
             title: item.title || "(Untitled)",
             timeText: `${item.date} ${baseTime}`
         });
@@ -554,7 +575,21 @@ function navigateToCalendarItem({ date, itemId }) {
     }
 }
 
-function reminderOffsetMs(reminder) {
+function reminderOffsetMs(reminder, customEvery = 1, customUnit = "minute") {
+    if (reminder === "custom") {
+        const every = Number(customEvery);
+        if (!Number.isFinite(every) || every < 1) return 0;
+
+        const unitMap = {
+            minute: 60 * 1000,
+            hour: 60 * 60 * 1000,
+            day: 24 * 60 * 60 * 1000,
+            week: 7 * 24 * 60 * 60 * 1000
+        };
+
+        return every * (unitMap[customUnit] || unitMap.minute);
+    }
+
     const map = {
         "5m": 5 * 60 * 1000,
         "10m": 10 * 60 * 1000,

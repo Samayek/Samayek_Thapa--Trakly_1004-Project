@@ -426,7 +426,8 @@ function renderMonthlyHeatmap(monthTasks, targetMonthDate) {
         </div>
 
         <p class="text-muted mt-3 mb-0">
-            Darker cells mean more daily task activity in the selected month.
+            <span class="heatmap-note-light">Light mode: Darker cells mean more daily task activity in the selected month.</span>
+            <span class="heatmap-note-dark">Dark mode: Lighter cells mean more daily task activity in the selected month.</span>
         </p>
     `;
 }

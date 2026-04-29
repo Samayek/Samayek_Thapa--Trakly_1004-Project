@@ -498,33 +498,6 @@ function getReminderSystemStatus() {
     return { permissionLabel };
 }
 
-function buildActiveNotificationIds() {
-    const now = new Date();
-    const today = getTodayKey();
-    const in7Days = new Date(now);
-    in7Days.setDate(in7Days.getDate() + 7);
-    const dismissed = new Set(storage.getDismissedNotifications());
-    const ids = [];
-
-    storage.getTaskEvents().forEach((item) => {
-        if (!item?.date) return;
-        const dateObj = new Date(`${item.date}T${item.time || "23:59"}`);
-        const isDone = String(item.status || "").toLowerCase() === "done";
-
-        if (item.type === "task" && item.date === today && !isDone) {
-            ids.push(`due:${item.id ?? `${item.date}-${item.title}`}`);
-        }
-        if (item.type === "task" && dateObj < now && !isDone) {
-            ids.push(`overdue:${item.id ?? `${item.date}-${item.title}`}`);
-        }
-        if (item.type === "event" && dateObj >= now && dateObj <= in7Days) {
-            ids.push(`upcoming:${item.id ?? `${item.date}-${item.title}`}`);
-        }
-    });
-
-    return ids.filter((id) => !dismissed.has(id));
-}
-
 async function requestBrowserNotificationPermission() {
     if (!("Notification" in window)) return "unsupported";
     if (!window.isSecureContext) return "insecure-context";
@@ -568,16 +541,38 @@ function getInitialFromName(name) {
 }
 
 function showSettingsAlert(message, type = "info") {
-    const notificationArea = document.getElementById("notification-area");
-    if (!notificationArea) return;
+    const host = document.getElementById("notification-area");
+    if (!host) return;
 
     const safeType = ["success", "danger", "warning", "info"].includes(type) ? type : "info";
-    notificationArea.innerHTML = `<div class="alert alert-${safeType}" role="alert">${escapeHtml(message)}</div>`;
+    host.classList.add("toast-stack");
 
-    window.setTimeout(() => {
-        notificationArea.innerHTML = "";
-    }, 3500);
+    const toast = document.createElement("div");
+    toast.className = `app-toast app-toast-${safeType}`;
+    toast.innerHTML = `
+        <div class="app-toast-body">${escapeHtml(message)}</div>
+        <button type="button" class="app-toast-close" aria-label="Close">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    `;
+
+    host.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
+
+    const removeToast = () => {
+        toast.classList.remove("is-visible");
+        toast.classList.add("is-leaving");
+        window.setTimeout(() => toast.remove(), 180);
+    };
+
+    const timer = window.setTimeout(removeToast, 3200);
+    toast.querySelector(".app-toast-close")?.addEventListener("click", () => {
+        window.clearTimeout(timer);
+        removeToast();
+    }, { once: true });
 }
+
 
 function emitNotificationsUpdate() {
     window.dispatchEvent(new CustomEvent("trakly:notifications-updated"));

@@ -16,7 +16,7 @@ export function renderFinance() {
                     <h2 class="mb-1">Finance Tracker</h2>
                     <p class="text-muted mb-0">Track your income, expenses, and monthly budget</p>
                 </div>
-                <button class="btn btn-primary finance-add-btn" id="addTransactionBtn" type="button">
+                <button class="btn btn-add-action" id="addTransactionBtn" type="button">
                     <i class="bi bi-plus-lg me-1"></i>Add Transaction
                 </button>
             </div>
@@ -117,7 +117,12 @@ export function renderFinance() {
             <div class="card finance-transactions-card">
                 <div class="finance-transactions-head">
                     <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Transactions</h5>
-                    <span class="finance-record-pill" id="transactionRecordCount">0 records</span>
+                    <div class="finance-transactions-actions">
+                        <span class="finance-record-pill" id="transactionRecordCount">0 records</span>
+                        <button class="btn btn-add-action btn-add-action-sm" id="addTransactionInlineBtn" type="button">
+                            <i class="bi bi-plus-lg me-1"></i>Add Transaction
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-responsive finance-transactions-scroll">
@@ -142,7 +147,7 @@ export function renderFinance() {
                 </div>
             </div>
 
-            <dialog id="transactionModal" class="finance-modal custom-modal">
+            <dialog id="transactionModal" class="finance-modal">
                 <div class="modal-header">
                     <h2 id="transactionModalTitle">Add Transaction</h2>
                     <button type="button" id="closeTransactionModal">&times;</button>
@@ -151,30 +156,30 @@ export function renderFinance() {
                 <form id="transactionForm">
                     <input type="hidden" id="transId">
                     <div class="finance-form-grid">
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="transDate" class="form-label">DATE <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="transDate" required>
                         </div>
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="transType" class="form-label">TYPE <span class="text-danger">*</span></label>
                             <select class="form-control" id="transType" required>
                                 <option value="expense">Expense</option>
                                 <option value="income">Income</option>
                             </select>
                         </div>
-                        <div class="input-group finance-col-span-2">
+                        <div class="field-group finance-col-span-2">
                             <label for="transDesc" class="form-label">DESCRIPTION</label>
                             <input type="text" class="form-control" id="transDesc" placeholder="e.g. Monthly salary">
                         </div>
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="transAmount" class="form-label">AMOUNT (&pound;) <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="transAmount" min="0.01" step="0.01" placeholder="0.00" required>
                         </div>
-                        <div class="input-group">
+                        <div class="field-group">
                             <label for="transCategory" class="form-label">CATEGORY</label>
                             <select class="form-control" id="transCategory" required></select>
                         </div>
-                        <div class="input-group finance-col-span-2">
+                        <div class="field-group finance-col-span-2">
                             <label for="transMethod" class="form-label">PAYMENT METHOD</label>
                             <select class="form-control" id="transMethod" required>
                                 ${PAYMENT_METHODS.map((method) => `<option value="${method.toLowerCase()}">${method}</option>`).join("")}
@@ -191,13 +196,13 @@ export function renderFinance() {
                 </form>
             </dialog>
 
-            <dialog id="budgetModal" class="finance-modal custom-modal">
+            <dialog id="budgetModal" class="finance-modal">
                 <div class="modal-header">
                     <h2 id="budgetModalTitle">Edit Budget</h2>
                     <button type="button" id="closeBudgetModal">&times;</button>
                 </div>
                 <form id="budgetForm">
-                    <div class="input-group">
+                    <div class="field-group">
                         <label for="budgetModalInput" class="form-label">Monthly Budget (&pound;)</label>
                         <input
                             type="number"
@@ -224,6 +229,7 @@ export function renderFinance() {
 
 export function setupFinanceForm() {
     const addBtn = document.getElementById("addTransactionBtn");
+    const addInlineBtn = document.getElementById("addTransactionInlineBtn");
     const modal = document.getElementById("transactionModal");
     const closeBtn = document.getElementById("closeTransactionModal");
     const cancelBtn = document.getElementById("cancelTransactionBtn");
@@ -251,6 +257,7 @@ export function setupFinanceForm() {
     budgetModalInput.value = storage.getMonthlyBudget() > 0 ? String(storage.getMonthlyBudget()) : "";
 
     addBtn.addEventListener("click", openTransactionModal);
+    addInlineBtn?.addEventListener("click", openTransactionModal);
     closeBtn?.addEventListener("click", closeAndResetTransactionModal);
     cancelBtn?.addEventListener("click", closeAndResetTransactionModal);
 
@@ -273,7 +280,18 @@ export function setupFinanceForm() {
     });
 
     table.addEventListener("click", (e) => {
+        const editBtn = e.target.closest(".edit-transaction-btn");
         const deleteBtn = e.target.closest(".delete-transaction-btn");
+        if (editBtn) {
+            const id = Number(editBtn.dataset.id);
+            if (!Number.isFinite(id)) return;
+
+            const transaction = getTransactions().find((item) => item.id === id);
+            if (!transaction) return;
+            openEditTransactionModal(transaction);
+            return;
+        }
+
         if (!deleteBtn) return;
 
         const id = Number(deleteBtn.dataset.id);
@@ -320,13 +338,45 @@ function openTransactionModal() {
     const transType = document.getElementById("transType");
     const transCategory = document.getElementById("transCategory");
     const transDate = document.getElementById("transDate");
+    const transId = document.getElementById("transId");
 
     form?.reset();
+    if (transId) transId.value = "";
     if (modalTitle) modalTitle.textContent = "Add Transaction";
     if (saveLabel) saveLabel.innerHTML = `<i class="bi bi-check-lg me-1"></i>Save Transaction`;
     if (transDate) transDate.value = getTodayDateString();
     if (transType) transType.value = "expense";
     if (transCategory && transType) renderTypeCategoryOptions(transType.value, transCategory);
+    modal?.showModal();
+}
+
+function openEditTransactionModal(transaction) {
+    const modal = document.getElementById("transactionModal");
+    const modalTitle = document.getElementById("transactionModalTitle");
+    const saveLabel = document.getElementById("saveTransactionBtnLabel");
+    const transId = document.getElementById("transId");
+    const transDate = document.getElementById("transDate");
+    const transDesc = document.getElementById("transDesc");
+    const transAmount = document.getElementById("transAmount");
+    const transType = document.getElementById("transType");
+    const transCategory = document.getElementById("transCategory");
+    const transMethod = document.getElementById("transMethod");
+
+    if (modalTitle) modalTitle.textContent = "Edit Transaction";
+    if (saveLabel) saveLabel.innerHTML = `<i class="bi bi-check-lg me-1"></i>Update Transaction`;
+    if (transId) transId.value = String(transaction.id);
+    if (transDate) transDate.value = transaction.date;
+    if (transDesc) transDesc.value = transaction.desc || "";
+    if (transAmount) transAmount.value = String(transaction.amount);
+    if (transType) transType.value = transaction.type;
+
+    if (transCategory && transType) {
+        renderTypeCategoryOptions(transType.value, transCategory);
+        transCategory.value = transaction.category;
+    }
+
+    if (transMethod) transMethod.value = transaction.method;
+
     modal?.showModal();
 }
 
@@ -431,9 +481,14 @@ function renderTransactions() {
                 <td><span class="finance-pill ${typeClass}">${typeLabel}</span></td>
                 <td class="finance-amount-cell ${typeClass}">${amountSign}${formatCurrency(item.amount)}</td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger delete-transaction-btn" data-id="${item.id}" aria-label="Delete transaction">
-                        <i class="bi bi-trash"></i>
-                    </button>
+                    <div class="finance-row-actions">
+                        <button type="button" class="btn btn-sm btn-outline-primary edit-transaction-btn" data-id="${item.id}" aria-label="Edit transaction">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger delete-transaction-btn" data-id="${item.id}" aria-label="Delete transaction">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -536,8 +591,8 @@ function renderTopCategories(container, transactions) {
         return `
             <div class="finance-top-item">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <strong><i class="bi bi-record-circle me-1"></i>${escapeHtml(toTitle(category))}</strong>
-                    <strong>${formatCurrency(total)}</strong>
+                    <span class="finance-top-name"><i class="bi bi-record-circle me-1"></i>${escapeHtml(toTitle(category))}</span>
+                    <span class="finance-top-value">${formatCurrency(total)}</span>
                 </div>
                 <div class="finance-top-bar">
                     <span style="width:${width.toFixed(2)}%"></span>
@@ -638,3 +693,4 @@ function escapeHtml(value) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#39;");
 }
+
