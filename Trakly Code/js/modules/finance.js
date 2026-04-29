@@ -228,6 +228,7 @@ export function renderFinance() {
     `;
 }
 
+// wire up the finance page after the router has injected the HTML
 export function setupFinanceForm() {
     const addBtn = document.getElementById("addTransactionBtn");
     const addInlineBtn = document.getElementById("addTransactionInlineBtn");
@@ -388,6 +389,7 @@ function closeAndResetTransactionModal() {
     modal?.close();
 }
 
+// keep bad form values out of storage and ensure consistent formatting
 function collectTransactionFormData() {
     const idValue = document.getElementById("transId")?.value;
     const date = document.getElementById("transDate")?.value;
@@ -412,10 +414,12 @@ function collectTransactionFormData() {
     });
 }
 
+// old imports/backups might not match the latest shape, so clean them first
 function getTransactions() {
     return storage.getTransactions().map(normalizeTransaction);
 }
 
+// table, summary cards, budget and top categories all update from the same filter state
 function renderTransactions() {
     const table = document.getElementById("transactionTable");
     const filterMonth = document.getElementById("filterMonth");
@@ -535,6 +539,7 @@ function updateSummary(summary, source, monthValue) {
     netBalanceEl.classList.toggle("text-success", summary.netBalance >= 0);
 }
 
+// budget progress is month-based, not all-time spending, so it can be tracked even if old transactions are edited or deleted without losing the budget history
 function updateBudgetPanel({ budget, monthExpense }) {
     const budgetValue = document.getElementById("monthlyBudgetValue");
     const spentValue = document.getElementById("monthlySpentValue");
@@ -571,6 +576,7 @@ function updateBudgetPanel({ budget, monthExpense }) {
     badge.textContent = `${formatCurrency(remaining)} remaining`;
 }
 
+// only expenses count here, income categories would make this confusing and the budget is meant to track outflow, not inflow
 function renderTopCategories(container, transactions) {
     const expenses = transactions.filter((item) => item.type === "expense");
     if (expenses.length === 0) {
@@ -624,6 +630,7 @@ function renderCategoryFilterOptions(targetSelect) {
     `;
 }
 
+// storage data isn't trusted blindly, so ensure it matches the expected shape and formatting before using it in the app
 function normalizeTransaction(raw) {
     const normalizedType = TYPE_OPTIONS.includes(String(raw?.type || "").toLowerCase())
         ? String(raw.type).toLowerCase()
