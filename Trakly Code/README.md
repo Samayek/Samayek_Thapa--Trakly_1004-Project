@@ -7,6 +7,10 @@ All things and information related to COMP-1004 Project
 Trakly is a browser-based Single Page Application for personal productivity and management.  
 It combines task/event planning, finance tracking, notifications, and backup/restore in one dashboard.
 
+## Name: Samayek Thapa
+
+## Stand-up Leader: Vivek Singh
+
 ## Overview
 
 This project was built as a university software engineering SPA using Vanilla JavaScript and browser storage.  
