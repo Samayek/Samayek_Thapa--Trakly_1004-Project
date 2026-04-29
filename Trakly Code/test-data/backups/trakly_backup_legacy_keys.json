@@ -1,0 +1,82 @@
+﻿{
+    "app":  "Trakly",
+    "exportedAt":  "2026-04-29T18:22:00.000Z",
+    "data":  {
+                 "taskEvents":  [
+                                    {
+                                        "id":  39901,
+                                        "type":  "task",
+                                        "title":  "Legacy key task 1",
+                                        "desc":  "uses taskEvents key format",
+                                        "date":  "2026-06-01",
+                                        "startTime":  "08:00",
+                                        "endTime":  "",
+                                        "time":  "08:00",
+                                        "reminder":  "5m",
+                                        "reminderEvery":  1,
+                                        "reminderUnit":  "minute",
+                                        "repeatType":  "daily",
+                                        "repeatEvery":  1,
+                                        "repeatUnit":  "day",
+                                        "priority":  "Low",
+                                        "status":  "To Do",
+                                        "progress":  0,
+                                        "updatedAt":  "2026-06-01T12:00:00.000Z"
+                                    },
+                                    {
+                                        "id":  39902,
+                                        "type":  "event",
+                                        "title":  "Legacy key event 2",
+                                        "desc":  "uses taskEvents key format",
+                                        "date":  "2026-06-04",
+                                        "startTime":  "12:00",
+                                        "endTime":  "13:30",
+                                        "time":  "12:00",
+                                        "reminder":  "custom",
+                                        "reminderEvery":  3,
+                                        "reminderUnit":  "day",
+                                        "repeatType":  "custom",
+                                        "repeatEvery":  1,
+                                        "repeatUnit":  "month",
+                                        "priority":  "High",
+                                        "status":  "Done",
+                                        "progress":  0,
+                                        "updatedAt":  "2026-06-04T12:00:00.000Z"
+                                    }
+                                ],
+                 "transactionsItems":  [
+                                           {
+                                               "id":  69901,
+                                               "date":  "2026-06-01",
+                                               "desc":  "Legacy income sample",
+                                               "amount":  1200,
+                                               "type":  "income",
+                                               "category":  "salary",
+                                               "method":  "bank transfer"
+                                           },
+                                           {
+                                               "id":  69902,
+                                               "date":  "2026-06-02",
+                                               "desc":  "Legacy expense sample",
+                                               "amount":  88.2,
+                                               "type":  "expense",
+                                               "category":  "education",
+                                               "method":  "card"
+                                           }
+                                       ],
+                 "monthlyBudget":  "1800",
+                 "theme":  "dark",
+                 "profile":  {
+                                 "name":  "Legacy Import",
+                                 "avatar":  "L"
+                             },
+                 "notifications":  {
+                                       "read":  [
+                                                    "reminder:39901:5m"
+                                                ],
+                                       "dismissed":  [
+
+                                                     ]
+                                   }
+             }
+}

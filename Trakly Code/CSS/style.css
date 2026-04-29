@@ -1,3 +1,9 @@
+/* Trakly CSS - Main stylesheet for the application, defining global styles, theming variables, and component-specific styles. 
+This file is structured to provide a consistent look and feel across the app while allowing for easy theming and customization.
+
+Also to overrise from Bootstrap styles "!important" is used to ensure consistency for custom styles. */
+
+/* Trakly CSS Variables and Global Styles */
 :root,
 [data-theme="light"] {
     --sidebar-width: 272px;
@@ -66,6 +72,7 @@ body {
     color: var(--app-text);
 }
 
+/* Layout and component styles of the application */
 .main-wrapper,
 .main-content {
     background: var(--app-bg);
@@ -471,7 +478,7 @@ body {
 }
 
 .finance-transactions-scroll {
-    max-height: 620px;
+    max-height: 510px;
 }
 
 .finance-summary-icon {
@@ -876,6 +883,12 @@ body {
     gap: 0.5rem;
 }
 
+#taskeventList {
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+}
+
 #taskeventList .list-group-item {
     border-radius: 0.75rem;
     border: 1px solid var(--app-border);
@@ -1241,6 +1254,7 @@ body {
 .dashboard-scroll-list,
 .finance-top-categories-scroll,
 .finance-transactions-scroll,
+#taskeventList,
 #taskeventForm,
 .finance-modal form {
     scrollbar-width: thin;

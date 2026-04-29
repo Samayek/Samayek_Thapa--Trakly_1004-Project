@@ -428,9 +428,8 @@ function renderTransactions() {
     const selectedMonth = filterMonth.value;
     const selectedCategory = filterCategory.value;
 
-    const monthScoped = selectedMonth
-        ? allTransactions.filter((item) => item.date.startsWith(selectedMonth))
-        : allTransactions.filter((item) => item.date.startsWith(getCurrentMonthValue()));
+    const effectiveMonth = selectedMonth || getCurrentMonthValue();
+    const monthScoped = allTransactions.filter((item) => item.date.startsWith(effectiveMonth));
 
     let displayTransactions = [...allTransactions];
     if (selectedMonth) {
@@ -448,8 +447,8 @@ function renderTransactions() {
         return Number(b.id) - Number(a.id);
     });
 
-    const totalSummary = calculateSummary(allTransactions);
-    updateSummary(totalSummary, allTransactions);
+    const totalSummary = calculateSummary(monthScoped);
+    updateSummary(totalSummary, monthScoped, effectiveMonth);
 
     const budget = storage.getMonthlyBudget();
     const monthExpense = monthScoped.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
@@ -507,7 +506,7 @@ export function calculateSummary(transactions) {
     return { income, expense, netBalance: income - expense };
 }
 
-function updateSummary(summary, source) {
+function updateSummary(summary, source, monthValue) {
     const totalIncomeEl = document.getElementById("totalIncome");
     const totalExpenseEl = document.getElementById("totalExpense");
     const netBalanceEl = document.getElementById("netBalance");
@@ -524,8 +523,9 @@ function updateSummary(summary, source) {
     totalExpenseEl.textContent = formatCurrency(summary.expense);
     netBalanceEl.textContent = formatCurrency(summary.netBalance);
 
-    incomeMeta.textContent = incomeCount > 0 ? "All income" : "No income yet";
-    expenseMeta.textContent = expenseCount > 0 ? "All outflow" : "No expenses yet";
+    const monthLabel = formatMonthValueLabel(monthValue);
+    incomeMeta.textContent = incomeCount > 0 ? `${monthLabel} income` : `No income in ${monthLabel.toLowerCase()}`;
+    expenseMeta.textContent = expenseCount > 0 ? `${monthLabel} outflow` : `No expenses in ${monthLabel.toLowerCase()}`;
     netMeta.textContent = summary.netBalance < 0 ? "Over spending" : "Healthy balance";
 
     totalIncomeEl.classList.toggle("text-success", summary.income > 0);
@@ -683,6 +683,15 @@ function getCurrentMonthValue() {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     return `${year}-${month}`;
+}
+
+function formatMonthValueLabel(monthValue) {
+    const [year, month] = String(monthValue || "").split("-").map(Number);
+    if (!year || !month) return "This month";
+    return new Date(year, month - 1, 1).toLocaleDateString("en-GB", {
+        month: "long",
+        year: "numeric"
+    });
 }
 
 function escapeHtml(value) {

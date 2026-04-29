@@ -1,4 +1,6 @@
-// This js file is to create one storage for all the data of the app, such as user preferences, project data, etc. This will be used to store and retrieve data across different modules and views in a consistent way. It will also handle saving to localStorage or any future backend integration for persistence.
+// This js file is to create one storage for all the data of the app, such as user preferences, project data, etc. 
+// This will be used to store and retrieve data across different modules and views in a consistent way. 
+// It will also handle saving to localStorage or any future backend integration for persistence.
 
 const KEYS_PREFIX = {
     TASK_EVENT: "taskeventItems",

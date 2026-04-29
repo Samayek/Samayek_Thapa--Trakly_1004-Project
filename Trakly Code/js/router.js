@@ -5,7 +5,9 @@ import { renderSettings, setupSettings } from "./modules/settings.js";
 import { renderAbout } from "./modules/about.js";
 
 
-/* This function was used to loadview the modules  
+/* This function was used to loadview the modules  before I refactored to the new routes object approach. 
+It handled rendering the appropriate view based on the viewName parameter and also included error handling for missing views or container. 
+The new approach with the routes object allows for cleaner code and easier maintenance as we can simply add new views to the routes object without modifying the loadView function logic.
 
 export function loadView(viewName) {
 

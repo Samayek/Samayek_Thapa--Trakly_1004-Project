@@ -1,5 +1,6 @@
 import { storage } from "./storage.js";
 
+//Render the about Trakly view UI 
 export function renderAbout() {
     const taskeventCount = storage.getTaskEvents().length;
     const transactionCount = storage.getTransactions().length;
@@ -54,7 +55,7 @@ export function renderAbout() {
         {
             icon: "bi-database",
             title: "localStorage",
-            text: "Offline-first persistence for tasks, transactions, theme, and profile."
+            text: "Offline-first persistence for tasks, events, transactions, theme, and profile."
         }
     ];
 
@@ -156,12 +157,12 @@ export function renderAbout() {
 
             <div class="card p-4 mb-4">
                 <h5 class="mb-3"><i class="bi bi-shield-lock me-2 text-primary"></i>Privacy & Data</h5>
-                <p class="mb-2">All data is stored locally in the browser via <code>localStorage</code>.</p>
+                <p class="mb-2">All data is stored locally in the browser via <code>localStorage</code>.</p>  <!-- <code> tag used for inline code styling -->
                 <p class="mb-0">Users can export/import backup JSON files for portability and recovery.</p>
             </div>
 
             <div class="card p-4">
-                <h5 class="mb-3"><i class="bi bi-rocket-takeoff me-2 text-primary"></i>Roadmap</h5>
+                <h5 class="mb-3"><i class="bi bi-rocket-takeoff me-2 text-primary"></i>Roadmap for Future Development</h5>
                 <ul class="mb-0">
                     ${roadmap.map((item) => `<li>${item}</li>`).join("")}
                 </ul>

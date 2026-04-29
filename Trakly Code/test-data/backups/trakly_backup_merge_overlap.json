@@ -1,0 +1,141 @@
+﻿{
+    "app":  "Trakly",
+    "version":  "1.0.0-merge-test",
+    "exportedAt":  "2026-04-29T18:21:00.000Z",
+    "data":  {
+                 "tasksevents":  [
+                                     {
+                                         "id":  10000,
+                                         "type":  "event",
+                                         "title":  "Finalize software report #1",
+                                         "desc":  "auto sample item 1 for testing",
+                                         "date":  "2026-03-15",
+                                         "startTime":  "08:00",
+                                         "endTime":  "10:00",
+                                         "time":  "08:00",
+                                         "reminder":  "none",
+                                         "reminderEvery":  1,
+                                         "reminderUnit":  "minute",
+                                         "repeatType":  "none",
+                                         "repeatEvery":  1,
+                                         "repeatUnit":  "day",
+                                         "priority":  "Low",
+                                         "status":  "To Do",
+                                         "progress":  0,
+                                         "updatedAt":  "2026-03-15T12:00:00.000Z"
+                                     },
+                                     {
+                                         "id":  10001,
+                                         "type":  "task",
+                                         "title":  "Group project sync #2",
+                                         "desc":  "auto sample item 2 for testing",
+                                         "date":  "2026-03-16",
+                                         "startTime":  "09:30",
+                                         "endTime":  "",
+                                         "time":  "09:30",
+                                         "reminder":  "5m",
+                                         "reminderEvery":  1,
+                                         "reminderUnit":  "minute",
+                                         "repeatType":  "daily",
+                                         "repeatEvery":  1,
+                                         "repeatUnit":  "day",
+                                         "priority":  "Medium",
+                                         "status":  "In Progress",
+                                         "progress":  0,
+                                         "updatedAt":  "2026-03-16T12:00:00.000Z"
+                                     },
+                                     {
+                                         "id":  29901,
+                                         "type":  "task",
+                                         "title":  "Merge test new task A",
+                                         "desc":  "new from merge file",
+                                         "date":  "2026-05-06",
+                                         "startTime":  "09:30",
+                                         "endTime":  "",
+                                         "time":  "09:30",
+                                         "reminder":  "custom",
+                                         "reminderEvery":  45,
+                                         "reminderUnit":  "minute",
+                                         "repeatType":  "custom",
+                                         "repeatEvery":  2,
+                                         "repeatUnit":  "week",
+                                         "priority":  "High",
+                                         "status":  "In Progress",
+                                         "progress":  0,
+                                         "updatedAt":  "2026-05-06T12:00:00.000Z"
+                                     },
+                                     {
+                                         "id":  29902,
+                                         "type":  "event",
+                                         "title":  "Merge test event B",
+                                         "desc":  "new event from merge file",
+                                         "date":  "2026-05-08",
+                                         "startTime":  "14:00",
+                                         "endTime":  "16:00",
+                                         "time":  "14:00",
+                                         "reminder":  "1d",
+                                         "reminderEvery":  1,
+                                         "reminderUnit":  "day",
+                                         "repeatType":  "monthly",
+                                         "repeatEvery":  1,
+                                         "repeatUnit":  "day",
+                                         "priority":  "Medium",
+                                         "status":  "To Do",
+                                         "progress":  0,
+                                         "updatedAt":  "2026-05-08T12:00:00.000Z"
+                                     }
+                                 ],
+                 "transactions":  [
+                                      {
+                                          "id":  50000,
+                                          "date":  "2026-01-01",
+                                          "desc":  "Monthly salary",
+                                          "amount":  85,
+                                          "type":  "income",
+                                          "category":  "salary",
+                                          "method":  "cash"
+                                      },
+                                      {
+                                          "id":  50001,
+                                          "date":  "2026-01-03",
+                                          "desc":  "Supermarket run",
+                                          "amount":  31,
+                                          "type":  "expense",
+                                          "category":  "food",
+                                          "method":  "card"
+                                      },
+                                      {
+                                          "id":  59901,
+                                          "date":  "2026-05-03",
+                                          "desc":  "Merge test transaction income",
+                                          "amount":  640,
+                                          "type":  "income",
+                                          "category":  "freelance",
+                                          "method":  "bank transfer"
+                                      },
+                                      {
+                                          "id":  59902,
+                                          "date":  "2026-05-04",
+                                          "desc":  "Merge test transaction expense",
+                                          "amount":  77.45,
+                                          "type":  "expense",
+                                          "category":  "food",
+                                          "method":  "card"
+                                      }
+                                  ],
+                 "monthlyBudget":  2600,
+                 "theme":  "light",
+                 "profile":  {
+                                 "name":  "Merge User",
+                                 "avatar":  "M"
+                             },
+                 "notifications":  {
+                                       "read":  [
+                                                    "due:29901"
+                                                ],
+                                       "dismissed":  [
+                                                         "upcoming:29902"
+                                                     ]
+                                   }
+             }
+}

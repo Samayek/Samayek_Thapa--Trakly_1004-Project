@@ -4,7 +4,7 @@ let currentDate = new Date();  // Current month shown in the calendar
 let selectedDate = null;       // Selected date used for filtering and prefilling the form
 let editingItemId = null;      // Stores the item id when editing an existing task/event
 
-/* Render the calendar view UI */
+//Render the calendar view UI 
 export function renderCalendar() {
     return `
         <div class="container calendar-shell">
@@ -393,6 +393,8 @@ function getTaskEventItems() {
     return storage.getTaskEvents().map(normalizeTaskEventItem);
 }
 
+// form -> normalized-ish payload before we sanitize again before saving, this is to ensure we have consistent data structure and types for the rest of the app to work with. It also handles backward compatibility with older data formats and provides default values where needed.
+// in short: collect raw form values first, then normalize before persisting
 function collectFormData() {
     const type = document.querySelector(`input[name="type"]:checked`)?.value || "task";
     const startTime = document.getElementById("taskeventStartTime").value;
@@ -446,6 +448,7 @@ function validateCalendarItem(item) {
     return null;
 }
 
+// compatibility bridge for older saved items (time/status/reminder fields)
 function normalizeTaskEventItem(raw) {
     const type = raw?.type === "event" ? "event" : "task";
     const status = STATUS_OPTIONS.includes(raw?.status) ? raw.status : "To Do";
@@ -627,7 +630,6 @@ function updateSelectedDateLabel() {
 }
 
 // Repeat + date logic
-
 function occursOnDate(item, targetDateString) {
     if (!item?.date || !targetDateString) return false;
 
@@ -682,8 +684,7 @@ function reminderText(item) {
     return map[item.reminder] || item.reminder;
 }
 
-// Navigation context from shell (search/notifications)
-
+// Navigation context from search/notification: open calendar focused to the requested date/item
 function applyNavContextIfAny() {
     const raw = sessionStorage.getItem("traklyNavContext");
     if (!raw) return;
@@ -716,9 +717,7 @@ function applyNavContextIfAny() {
     }
 }
 
-// Utilities
-
-
+// Utilities functions 
 function sortItems(items) {
     return [...items].sort((a, b) => {
         const aKey = `${a.date || ""}T${a.startTime || "23:59"}`;

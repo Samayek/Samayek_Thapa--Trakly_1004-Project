@@ -3,12 +3,13 @@ import { storage } from "./storage.js";
 const DEFAULT_PROFILE = {
     name: "User"
 };
-
+// import supports two strategies: overwrite (replace all) and merge (append/merge safely)
 const IMPORT_MODE = {
     OVERWRITE: "overwrite",
     MERGE: "merge"
 };
 
+//Render the settings view UI 
 export function renderSettings() {
     const profile = normalizeProfile(storage.getProfile());
     const theme = storage.getTheme();
@@ -290,7 +291,7 @@ export function setupSettings() {
             } else if (result === "unsupported") {
                 showSettingsAlert("Notifications are not supported in this browser.", "danger");
             } else if (result === "insecure-context") {
-                showSettingsAlert("Notifications need a secure context (https:// or localhost).", "danger");
+                showSettingsAlert("Notifications need a secure context (https:// or localhost).", "danger"); // browser notifications require secure context (https or localhost) by platform policy
             } else {
                 showSettingsAlert("Notification permission was dismissed.", "info");
             }
