@@ -8,6 +8,7 @@ const CATEGORY_OPTIONS = {
 const PAYMENT_METHODS = ["Cash", "Card", "Bank Transfer"];
 const TYPE_OPTIONS = ["expense", "income"];
 
+//Render the finance view UI 
 export function renderFinance() {
     return `
         <div class="container finance-shell">
@@ -702,4 +703,3 @@ function escapeHtml(value) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#39;");
 }
-

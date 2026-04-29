@@ -122,5 +122,5 @@ Import modes:
 
 ## Author
 
-- Name: Samayek
+- Name: Samayek Thapa
 - Project: Trakly (University SPA)

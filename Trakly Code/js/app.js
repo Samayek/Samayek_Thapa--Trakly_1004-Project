@@ -212,7 +212,6 @@ function initGlobalSearch() {
 }
 
 // Build and manage notification items from calendar data (due, overdue, upcoming, and reminder-triggered).
-
 function buildNotifications() {
     const now = new Date();
     const today = getTodayKey();
@@ -350,6 +349,7 @@ function initNotifications() {
         renderNotifications();
     });
 
+    // Handle notification item actions (view, mark as read, dismiss)
     notificationList.addEventListener("click", (e) => {
         const actionBtn = e.target.closest("[data-action]");
         const card = e.target.closest(".notification-item");
@@ -374,6 +374,7 @@ function initNotifications() {
             return;
         }
 
+        // open should jump to exact item now, not just calendar home, "View" keeps context and jumps to exact calendar date/item
         if (action === "open") {
             markNotificationRead(id);
             if (view === "calendar" && date) {
@@ -410,6 +411,8 @@ function initNotifications() {
     });
 }
 
+// Reminder engine to trigger notifications based on task/event reminders and update the notification panel accordingly
+// This runs on an interval and also when the app gains focus to ensure timely reminders.
 function runReminderTick({ pushBrowserNotification = true } = {}) {
     const now = new Date();
     const dueItems = [];
@@ -575,6 +578,8 @@ function navigateToCalendarItem({ date, itemId }) {
     }
 }
 
+// DO NOT TOUCH THIS unless reminders are broken again
+// converts preset/custom reminder values to ms so one notification pipeline can handle both
 function reminderOffsetMs(reminder, customEvery = 1, customUnit = "minute") {
     if (reminder === "custom") {
         const every = Number(customEvery);
