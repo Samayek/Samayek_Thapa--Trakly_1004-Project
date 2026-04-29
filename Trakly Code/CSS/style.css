@@ -56,6 +56,11 @@
     --bs-light-rgb: 39, 53, 73;
 }
 
+/* Global resets and base styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
     background: var(--app-bg);
     color: var(--app-text);
