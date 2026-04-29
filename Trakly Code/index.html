@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Trakly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap Icons CSS -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="CSS/style.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="Photos/favicon.ico" />
+</head>
+
+<body>
+    <!-- Mobile sidebar overlay, gonna need for mobile navigation -->
+     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-shell">
+
+        <!-- Sidebar, this is the permanent app navigation area -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-mark">
+                    <div class="sidebar-avatar" id="sidebarAvatar">T</div>
+                    <div>
+                        <div class="sidebar-logo-title">Trakly</div>
+                        <div class="sidebar-user-sub">Track Everything of Your Life</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Main Navigation">
+                <div class="sidebar-section-label">Overview</div>
+
+                <button class="nav-btn active" data-view="dashboard">
+                    <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
+                    <span>Dashboard</span>
+                </button>
+
+                <div class="sidebar-section-label">Modules</div>
+
+                <button class="nav-btn" data-view="calendar">
+                    <span class="nav-icon"><i class="bi bi-calendar3"></i></span>
+                    <span>Calendar Hub</span>
+                </button>
+
+                <button class="nav-btn" data-view="finance">
+                    <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
+                    <span>Finance Tracker</span>
+                </button>
+
+                <!-- Placeholder for future settings page -->
+                <!-- You can keep this button now and wire it later -->
+                <div class="sidebar-section-label">System</div>
+                
+                <button class="nav-btn" data-view="settings">
+                    <span class="nav-icon"><i class="bi bi-gear"></i></span>
+                    <span>Settings & Backup</span>
+                </button>
+
+                <button class="nav-btn" data-view="about">
+                    <span class="nav-icon"><i class="bi bi-info-circle"></i></span>
+                    <span>About Trakly</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <!-- Placeholder theme toggle -->
+                <button class="theme-toggle-btn" id="themeToggleBtn" type="button">
+                    <i class="bi bi-moon-stars"></i>
+                    <span>Toggle Theme</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main app area -->
+        <div class="main-wrapper">
+        
+            <!-- Topbar, this gives the app a real product-style shell -->
+            <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" type="button">
+                <i class="bi bi-list"></i>
+                </button>
+                <span class="topbar-title" id="topbarTitle">Dashboard</span>
+            </div>
+
+            <div class="topbar-right">
+                <div class="global-search-wrap" id="globalSearchWrap">
+                <i class="bi bi-search global-search-icon"></i>
+                <input
+                    type="text"
+                    id="globalSearchInput"
+                    class="global-search-input"
+                    placeholder="Search tasks, events, transactions..."
+                    autocomplete="off"
+                />
+                <div class="global-search-results" id="globalSearchResults"></div>
+                </div>
+
+                <span class="topbar-date" id="topbarDate">Today</span>
+
+                <div class="notification-wrap">
+                <button class="topbar-icon-btn" type="button" id="notificationBtn" aria-label="Notifications">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-dot" id="notificationDot"></span>
+                </button>
+                <div class="notification-panel" id="notificationPanel" aria-hidden="true">
+                    <div class="notification-panel-header">
+                    <h6 class="mb-0"><i class="bi bi-bell me-2"></i>Notifications</h6>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="markAllReadBtn">Mark all read</button>
+                    </div>
+                    <div class="notification-panel-body" id="notificationList"></div>
+                    <div class="notification-empty d-none" id="notificationEmpty">
+                    <i class="bi bi-check2-circle"></i>
+                    <span>No new notifications</span>
+                    </div>
+                </div>
+                </div>
+
+                <div class="topbar-profile-badge">
+                <div class="topbar-avatar-sm" id="topbarAvatarSm">T</div>
+                <span class="topbar-profile-name" id="topbarProfileName">User</span>
+                </div>
+            </div>
+            </header>
+
+
+            <!-- Main content -->
+            <main class="main-content">
+                <!-- Global notifications area -->
+                <section id="notification-area" class="mb-3">
+                    <!-- JS alerts / toasts can be inserted here later -->
+                </section>
+
+                <!-- SPA view container -->
+                <section id="view-container">
+                    <!-- Router loads modules here -->
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer text-center py-3">
+        <small class="app-footer-text">
+            Trakly © 2026 — Personal Productivity SPA Project
+        </small>
+    </footer>
+
+    <!--All JS files load here -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
