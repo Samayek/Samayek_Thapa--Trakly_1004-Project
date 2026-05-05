@@ -61,7 +61,7 @@ It runs fully client-side (no backend), with modular architecture and persistent
 
 ## Run Locally
 
-1. Open project folder in VS Code.
+1. Open the `Trakly Code` folder in VS Code.
 2. Use Live Server (or any local static server).
 3. Open `index.html` via `http://127.0.0.1:5500/...`
 
